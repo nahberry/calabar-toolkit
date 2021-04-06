@@ -39,6 +39,19 @@ def scanningMenu():
 
     print(scanMenu)
 
+
+def crawlingMenu():
+
+    crawlMenu = """
+
+    1. Images
+    2. Links
+    3. Top Producs
+
+    """
+
+    print(crawlMenu)
+
 def sniffingMenu():
 
     sniffMenuOptions = """

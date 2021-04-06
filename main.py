@@ -4,6 +4,7 @@ import os, sys
 from menu import *
 from singlehost import *
 from maccapture import *
+from scraping import *
 
 banner = """
 
@@ -76,8 +77,16 @@ def main():
                     returnToMenu()
 
         elif mainSelection == 2:
-            print(unsuportedItem) # Remove after this has been built
-            unsupportedReturn()
+            crawlingMenu()
+            crawlingMenuSelection = int(input("calabar > "))
+
+            while crawlingMenuSelection != 0:
+
+                if crawlingMenuSelection == 1:
+                    print("Not built yet ): ")
+                elif crawlingMenuSelection == 2:
+                    linkScraping()
+                    returnToMenu()
 
         elif mainSelection == 3:
             print(unsuportedItem) # Remove after this has been built

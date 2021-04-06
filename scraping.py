@@ -2,71 +2,50 @@
 
 import os, sys
 from menu import *
-from singlehost import *
-from maccapture import *
 import requests
 from bs4 import BeautifulSoup
+from rich import print
+from rich.columns import Columns
+from rich.console import Console
+from rich.table import Table
 
-#Input URL for scraping
-url = input("Enter a site url: ")
-#Create requests to get site contents
-page = requests.get(url)
-
-#Store contents in a variable
-txt = page.text
-status = page.status_code
-
-#Parse HTML with BeautifulSoup
-soup = BeautifulSoup(page.content, 'html.parser')
-
-#Extract title of page
-pageTitle = soup.title.text
-pageBody = soup.body
-pageHead = soup.head
+#Initiate rich console options
+console = Console()
 
 #Create lists for content
 all_h1_tags = []
 all_p_tags = []
 image_data = []
-all_links = []
 top_items = []
 
-#Set list to all H1 tags of the soup
-for element in soup.select('h1'):
-    all_h1_tags.append(element.text)
+#Set varuable for menu selection
 
-#Set list to all P tags of the soup
-for element in soup.select('P'):
-    all_p_tags.append(element.text)
+def linkScraping():
 
+    #Setup a menu
+    print("")
+    print("Enter a Site URL: ")
+    url = input("calabar > ")
 
-#Extract images and store them in the image_data list
-images = soup.select('img')
-for image in images:
-    src = image.get('src')
-    alt = image.get('alt')
-    image_data.append({"src": src, "alt": alt})
+    #Assign site data to variable
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, 'html.parser')
 
+    #Setup rich table
+    table = Table(show_header=True, header_style='bold #2070b2', title='SITE MAP')
+    table.add_column('HREF', justify="left")
+    table.add_column('TITLE', justify="center")
 
-#Extract and store links in the all_links list
-links = soup.select('a')
-for ahref in links:
-    text = ahref.text
-    text = text.strip() if text is not None else ''
+    all_links = []
 
-    href = ahref.get('href')
-    href = href.strip() if href is not None else ''
-    all_links.append({"href": href, "text": text})
+    links = soup.select('a')
+    for ahref in links:
+        text = ahref.text
+        text = text.strip() if text is not None else ''
 
-#Extract and store data in top_items
+        href = ahref.get('href')
+        href = href.strip() if href is not None else ''
+        all_links.append({"href": href, "text": text})
+        table.add_row(href, text)
 
-products = soup.select('div.thumbnail')
-for elm in products:
-    title = elm.select('h4 > a.title')[0].text
-    reviewLabel = elm.select('div.ratings')[0].text
-    info = {
-        "title": title.strip(),
-        "review": reviewLabel.strip()
-    }
-
-    top_items.append(info)
+    console.print(table)
